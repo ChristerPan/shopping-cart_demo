@@ -18,46 +18,15 @@ router.get("/profile", (req, res) => {
     //     res.redirect("/user/login");
     // else
     //     res.render("profile");
-    res.render("profile");
+    res.render("profile", { username: req.session.user.username });
 });
 
 
 
 
 
-router.post("/register", (req, res) => {
-    const success = false;
-    if (success) {
-        req.flash("success_msg", "註冊成功");
-        res.redirect("/user/register");
-    }
-    else {
-        req.flash("warning_msg", "註冊失敗");
-        res.redirect("/user/register");
-    }
-});
-router.post("/login", (req, res) => {
-    const success = false;
-    if (success) {
-        req.flash("success_msg", "登入成功");
-        res.redirect("/user/login");
-    }
-    else {
-        req.flash("warning_msg", "登入失敗");
-        res.redirect("/user/login");
-    }
-});
-router.post("/logout", (req, res) => {
-    const success = false;
-    if (success) {
-        req.flash("success_msg", "登出成功");
-        res.redirect("/user/login");
-    }
-    else {
-        req.flash("warning_msg", "登出失敗");
-        res.redirect("/user/login");
-    }
-});
+router.post("/register", userCtr.register);
+router.post("/login", userCtr.login);
 
 
 module.exports = router;
