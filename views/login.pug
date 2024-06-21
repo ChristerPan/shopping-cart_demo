@@ -4,6 +4,18 @@ html(lang="en")
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title Login Page
+        //- script.
+        //-     window.addEventListener("beforeunload", async (event) =>{
+        //-         try {
+        //-             const response = await fetch('/user/logout', {
+        //-                 method: 'POST',
+        //-                 credentials: 'same-origin' // 保持同一站點的 cookie
+        //-             });
+        //-             console.log('Session deleted successfully');
+        //-         } catch (error) {
+        //-             console.log('Error deleting session:', error);
+        //-         }
+        //-     });
     body 
         h1 Login Page
         if success_msg

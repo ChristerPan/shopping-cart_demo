@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const path = require("path");
 const fs = require("fs");
 const baseName = path.basename(__filename);
-
+require("dotenv").config();
 
 const sequelize = new Sequelize(
     process.env.DATABASE,

@@ -1,50 +1,95 @@
 const { user } = require("../models");
 const bcrypt = require("bcrypt");
+const passport = require("passport");
 
 module.exports = {
-    register: async (req, res) => {
+    register: async (req, res, next) => {
 
         const { username, password, confirmPassword } = req.body;
 
         if (password !== confirmPassword) {
             req.flash("warning_msg", "密碼不一致");
-            return res.status(400).redirect("/user/register");
+            req.session.save(err => {
+                if (err) {
+                    console.error('Session save error:', err);
+                }
+                res.status(400).redirect("/user/register");
+            });
+
+            return;
         }
 
         const userData = await user.findOne({ where: { username } });
 
         if (userData) {
             req.flash("warning_msg", "這個Email被註冊過了!");
-            return res.status(400).redirect("/user/register");
+            req.session.save(err => {
+                if (err) {
+                    console.error('Session save error:', err);
+                }
+                res.status(400).redirect("/user/register");
+            });
+            return;
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await user.create({ username, password: hashedPassword });
         req.flash('success_msg', 'Register Success!');
-        return res.status(400).redirect("back");
+        req.session.save(err => {
+            if (err) {
+                console.error('Session save error:', err);
+            }
+            res.status(400).redirect("back");
+        });
+        return;
     },
 
-    login: async (req, res) => {
+    login: (req, res, next) => {
 
-        const { username, password } = req.body;
-        if (!user) console.log("AAAAAAAAAAA");
-        const userData = await user.findOne({ where: { username } });
+        passport.authenticate("local", (err, user, info) => {
 
-        if (!userData) {
-            req.flash('warning_msg', '帳號或密碼錯誤');
-            return res.status(400).redirect("/user/login");
-        }
+            console.log("passport.authenticate err " + err);
 
-        const isValid = await bcrypt.compare(password, userData.password);
+            if (user) {
+                req.login(user, (err) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    else {
+                        res.redirect("/user/profile");
+                    }
+                });
 
-        if (!isValid) {
-            req.flash('warning_msg', '帳號或密碼錯誤');
-            return res.status(400).redirect("/user/login");
-        }
+            } else {
+                req.flash("warning_msg", "帳號或密碼錯誤");
+                req.session.save(err => {
+                    if (err) {
+                        console.error('Session save error:', err);
+                    }
+                    res.redirect("/user/login");
+                });
+            }
 
-        req.session.user = userData;
-        // req.session.authorized = true;
-        res.redirect("/user/profile");
+
+        })(req, res, next)
+
     },
+
+    logout: (req, res, next) => {
+        req.logout((err) => {
+            if (err) {
+                return res.status(400).send(`Error: ${err}`)
+            }
+            else {
+                req.session.destroy((err) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    res.redirect("/user/login");
+                });
+
+            }
+        });
+    }
 }

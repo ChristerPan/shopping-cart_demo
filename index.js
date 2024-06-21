@@ -4,8 +4,11 @@ const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
 const port = process.env.PORT || 3000;
-require('dotenv').config();
 const db = require("./models");
+const passport = require("passport");
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
+//require('dotenv').config();
+require("./strategies/local-strategy");
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
@@ -13,6 +16,22 @@ app.set("view engine", "pug");
 //userID 318211442766-pjsvod89uj3odbgqtc3hv4m9s7egc021.apps.googleusercontent.com
 //password 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
 //http://localhost:3000/auth/google/callback
+
+const myStore = new SequelizeStore({
+    db: db.sequelize,
+    checkExpirationInterval: 1000 * 60,
+    expiration: 1000 * 60 * 5
+});
+
+app.use(session({
+    secret: "donttellanyone",
+    saveUninitialized: false,// 強制將未初始化的session存回 session store
+    resave: false,// 強制將session存回 session store
+    cookie: {
+        secure: false,
+    },
+    store: myStore
+}));
 
 (async () => {
     try {
@@ -23,26 +42,21 @@ app.set("view engine", "pug");
     catch (err) {
         console.error("db.sequelize.sync error:" + err);
     }
-})();
+})()
 
-app.use(session({
-    secret: "donttellanyone",// 強制將未初始化的session存回 session store
-    saveUninitialized: false,// 強制將session存回 session store
-    resave: false,
-    cookie: {
-        secure: false,
-    }
-}));
 
 app.use(flash());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(passport.initialize());
+app.use(passport.session());
 
+app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 app.use((req, res, next) => {
-    //console.log(`localFlash medhod ${req.method}`);
-    //console.log(`localFlash originalUrl ${req.originalUrl}`);
+    console.log(`localFlash medhod ${req.method}`);
+    console.log(`localFlash originalUrl ${req.originalUrl}`);
     res.locals.success_msg = req.flash("success_msg");
     res.locals.warning_msg = req.flash("warning_msg");
     res.locals.danger_msg = req.flash("danger_msg");;
@@ -51,21 +65,25 @@ app.use((req, res, next) => {
 
 require("./routes")(app);
 
+
 app.use((req, res) => {
-    res.status(404);
-    res.send("404 Page not found");
+    console.log("404");
+    console.log("req method" + req.method);
+    console.log("req originalUrl" + req.originalUrl);
+    res.status(404).send("404 Page not found");
 });
 
 // 自定義錯誤處理中間件 express原本已有預設的錯誤處理中間件
 app.use((err, req, res, next) => {
+    console.log("錯誤處理中間件");
     console.error(err.stack); // 打印錯誤堆棧信息到控制台
 
-    res.status(err.status || 500);
-    res.json({
-        error: {
-            message: err.message
-        }
-    });
+    res.status(err.status || 500)
+        .json({
+            error: {
+                message: err.message
+            }
+        });
 });
 
 app.listen(port, () => {
