@@ -4,18 +4,33 @@ html(lang="en")
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title Login Page
-        //- script.
-        //-     window.addEventListener("beforeunload", async (event) =>{
-        //-         try {
-        //-             const response = await fetch('/user/logout', {
-        //-                 method: 'POST',
-        //-                 credentials: 'same-origin' // 保持同一站點的 cookie
-        //-             });
-        //-             console.log('Session deleted successfully');
-        //-         } catch (error) {
-        //-             console.log('Error deleting session:', error);
-        //-         }
-        //-     });
+
+        script(src="https://accounts.google.com/gsi/client" async defer)
+        style.
+            .google-btn {
+                display: inline-flex;
+                align-items: center;
+                background-color: #4285F4;
+                color: white;
+                border: none;
+                padding: 10px 16px;
+                font-family: 'Roboto', sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                border-radius: 20px;
+                cursor: pointer;
+                text-decoration: none;
+            }
+            .google-btn:hover {
+                background-color: #357ae8;
+            }
+            .google-icon {
+                background: url('https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg') no-repeat center center;
+                background-size: contain;
+                width: 18px;
+                height: 18px;
+                margin-right: 10px;
+            }
     body 
         h1 Login Page
         if success_msg
@@ -29,4 +44,67 @@ html(lang="en")
             input(type="password", name="password" required)
             input(type="submit", value="Login")
         br
+        
+        br
+        a.google-btn(href="/user/googleLogin")
+            span.google-icon
+            |Sign in with Google
+        br
+        br
         a(href="/user/register") Register
+
+
+
+
+
+        
+//- a(href="/user/googleLogin")
+//-             button google login
+//- div#g_id_onload(
+//-             data-client_id="318211442766-pjsvod89uj3odbgqtc3hv4m9s7egc021.apps.googleusercontent.com"
+//-             data-context="signin"
+//-             data-ux_mode="popup"
+//-             data-login_uri="http://localhost:3000/user/google/callback"
+//-             data-auto_prompt="false"
+//-         )
+//-         div.g_id_signin(
+//-             data-type="standard"
+//-             data-shape="pill"
+//-             data-theme="outline"
+//-             data-text="signin_with"
+//-             data-size="medium"
+//-             data-logo_alignment="left"
+//-             data-width="40"
+//-         )
+        //- script.
+        //-     window.addEventListener("beforeunload", async (event) =>{
+        //-         try {
+        //-             const response = await fetch('/user/logout', {
+        //-                 method: 'POST',
+        //-                 credentials: 'same-origin' // 保持同一站點的 cookie
+        //-             });
+        //-             console.log('Session deleted successfully');
+        //-         } catch (error) {
+        //-             console.log('Error deleting session:', error);
+        //-         }
+        //-     });
+
+
+
+
+
+
+
+
+        //- script.
+        //-     window.addEventListener("beforeunload", async (event) =>{
+        //-         try {
+        //-             const response = await fetch('/user/logout', {
+        //-                 method: 'POST',
+        //-                 credentials: 'same-origin' // 保持同一站點的 cookie
+        //-             });
+        //-             console.log('Session deleted successfully');
+        //-         } catch (error) {
+        //-             console.log('Error deleting session:', error);
+        //-         }
+        //-     });

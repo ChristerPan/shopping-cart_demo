@@ -32,7 +32,7 @@ module.exports = {
             return;
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hashSync(password, 10);
 
         await user.create({ username, password: hashedPassword });
         req.flash('success_msg', 'Register Success!');
@@ -91,5 +91,7 @@ module.exports = {
 
             }
         });
-    }
+    },
+
+
 }

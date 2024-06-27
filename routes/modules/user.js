@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-//const passport = require("passport");
+const passport = require("passport");
 const { userCtr } = require("../../controllers");
 
 
@@ -22,6 +22,15 @@ router.get("/profile", (req, res) => {
         res.render("profile", { username: req.user.username });
 });
 
+router.get('/googleLogin', passport.authenticate('google', {
+    scope: ['email', 'profile'],
+    prompt: 'select_account',
+}));
+router.get('/google/callback', passport.authenticate('google', {
+    session: true,
+    successRedirect: '/user/profile',
+    failureRedirect: '/user/login'
+}))
 
 
 
@@ -29,22 +38,5 @@ router.get("/profile", (req, res) => {
 router.post("/register", userCtr.register);
 router.post("/login", userCtr.login);
 router.post("/logout", userCtr.logout);
-
-router.post("/deleteSession", (req, res, next) => {
-    req.logout((err) => {
-        if (err) {
-            return res.status(400).send(`Error: ${err}`)
-        }
-        else {
-            req.session.destroy((err) => {
-                if (err) {
-                    return next(err);
-                }
-                res.redirect("/user/login");
-            });
-
-        }
-    });
-})
 
 module.exports = router;

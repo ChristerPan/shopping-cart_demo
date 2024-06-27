@@ -9,13 +9,11 @@ const passport = require("passport");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 //require('dotenv').config();
 require("./strategies/local-strategy");
-
+require("./strategies/google-strategy");
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
-//userID 318211442766-pjsvod89uj3odbgqtc3hv4m9s7egc021.apps.googleusercontent.com
-//password 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
-//http://localhost:3000/auth/google/callback
+
 
 const myStore = new SequelizeStore({
     db: db.sequelize,
