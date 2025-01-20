@@ -3,15 +3,17 @@ const app = express();
 const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
-const port = process.env.PORT || 3000;
 const db = require("./models");
 const passport = require("passport");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 //require('dotenv').config();
 require("./strategies/local-strategy");
 require("./strategies/google-strategy");
+const port = process.env.PORT || 3000;
+
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
+
 
 
 
@@ -87,3 +89,5 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
     console.log(`Server running on localhost:${port}`);
 });
+
+module.exports = app;

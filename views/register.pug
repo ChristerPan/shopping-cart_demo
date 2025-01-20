@@ -1,23 +1,18 @@
-doctype html
-html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Register
-    body 
-        h1 Register
-        if success_msg
-            h2 #{success_msg}
-        if warning_msg
-            h2 #{warning_msg}
+extends layout
 
-        form(method="POST", action="/user/register", id="registerForm")
-            label(for="username") Username
+block content
+    form(method="POST", action="/user/register", id="registerForm")
+        .form-group
+            label(for="username") Email
             input(type="email", name="username", required)
+        .form-group
             label(for="password") Password
             input(type="password", name="password", required)
+        .form-group
             label(for="confirmPassword") Confirm Password
             input(type="password", name="confirmPassword", required)
-            button(type="submit") Register 
-        br
+        button(type="submit") Register
+    
+    .auth-footer
+        span Already have an account? 
         a(href="/user/login") Login

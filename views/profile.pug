@@ -1,10 +1,78 @@
-doctype html
-html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport" content="width=device-width, initial-scale=1.0")
-        title User Page
-    body 
-        h1 username：#{username}
-        form#logoutForm(action="/user/logout" method="POST")
-            button(type="submit") Logout
+extends layout
+
+block content
+    main.profile-container
+        .profile-header
+            h1 Hello!
+            p Your profile details are shown below.
+
+        .profile-info
+            .info-item
+                strong Email:
+                span #{username}
+        
+        .profile-actions
+            form#logoutForm(action="/user/logout" method="POST")
+                button(type="submit" class="button warning") Logout
+        
+block styles
+    style.
+        .profile-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .profile-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            word-wrap: break-word;
+        }
+        .profile-info {
+            margin: 1.5rem 0;
+        }
+        .info-item {
+            margin-bottom: 1rem;
+            word-wrap: break-word;
+        }
+        .info-item strong {
+            display: inline-block;
+            width: 150px;
+            color: #374151;
+        }
+        .info-item span {
+            color: #1a1a1a;
+            word-wrap: break-word;
+        }
+        .profile-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+        }
+        .profile-actions .button {
+            flex: 1 1 calc(50% - 1rem);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            box-sizing: border-box;
+        }
+        .profile-actions .button.warning {
+            background-color: #f87171;
+            color: white;
+        }
+        .profile-actions .button.warning:hover {
+            background-color: #dc2626;
+        }

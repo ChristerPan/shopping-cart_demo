@@ -3,6 +3,25 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 
 module.exports = {
+
+    getRegisterPage: (req, res, next) => {
+        res.render('register', { title: 'Register' });
+    },
+
+    getLoginPage: (req, res, next) => {
+        if (req.isAuthenticated())
+            res.render('profile', { username: req.user.username });
+        else
+            res.render('login', { title: 'Login' });
+    },
+
+    getProfilePage: (req, res, next) => {
+        if (req.isAuthenticated())
+            res.render('profile', { username: req.user.username });
+        else
+            res.redirect('/user/login');
+    },
+
     register: async (req, res, next) => {
 
         const { username, password, confirmPassword } = req.body;
@@ -35,7 +54,7 @@ module.exports = {
         const hashedPassword = await bcrypt.hashSync(password, 10);
 
         await user.create({ username, password: hashedPassword });
-        req.flash('success_msg', 'Register Success!');
+        req.flash('success_msg', '註冊成功!');
         req.session.save(err => {
             if (err) {
                 console.error('Session save error:', err);
@@ -93,5 +112,15 @@ module.exports = {
         });
     },
 
+    googleLogin: passport.authenticate('google', {
+        scope: ['email', 'profile'],
+        prompt: 'select_account', //要求 Google 顯示帳戶選擇器，讓用戶選擇哪個帳戶來登入
+    }),
+
+    googleCallBack: passport.authenticate('google', {
+        session: true, //是否在使用者成功登入後建立一個會話
+        successRedirect: '/user/profile',
+        failureRedirect: '/user/login'
+    })
 
 }

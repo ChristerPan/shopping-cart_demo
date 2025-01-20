@@ -4,36 +4,12 @@ const passport = require("passport");
 const { userCtr } = require("../../controllers");
 
 
-router.get("/register", (req, res) => {
-    res.render("register");
-});
-router.get("/login", (req, res) => {
-    if (req.isAuthenticated()) {
-        res.redirect("/user/profile");
-    }
-    else {
-        res.render("login");
-    }
-});
-router.get("/profile", (req, res) => {
-    if (!req.isAuthenticated())
-        res.redirect("/user/login");
-    else
-        res.render("profile", { username: req.user.username });
-});
+router.get("/register", userCtr.getRegisterPage);
+router.get("/login", userCtr.getLoginPage);
+router.get("/profile", userCtr.getProfilePage);
 
-router.get('/googleLogin', passport.authenticate('google', {
-    scope: ['email', 'profile'],
-    prompt: 'select_account',
-}));
-router.get('/google/callback', passport.authenticate('google', {
-    session: true,
-    successRedirect: '/user/profile',
-    failureRedirect: '/user/login'
-}))
-
-
-
+router.get('/googleLogin', userCtr.googleLogin);
+router.get('/google/callback', userCtr.googleCallBack);
 
 router.post("/register", userCtr.register);
 router.post("/login", userCtr.login);
